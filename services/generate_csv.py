@@ -71,10 +71,9 @@ def main(num_records: int = 150) -> None:
     for _ in range(num_records):
         sid, sname, email, phone, dept_id, dept_name = random.choice(students)
 
-        course_id, course_title, credit_hours, course_dept, instructor_id = random.choice(COURSES)
-        # instructor details
-        instr = next(x for x in INSTRUCTORS if x[0] == instructor_id)
-        instructor_name = instr[1]
+        course_id, course_title, credit_hours, _, instructor_id = random.choice(COURSES)
+        instr = next((x for x in INSTRUCTORS if x[0] == instructor_id), None)
+        instructor_name = instr[1] if instr else 'Unknown'
 
         semester = random.choice(SEMESTERS)
         enroll_date = random_date(date(2025, 1, 1), date(2026, 12, 31))

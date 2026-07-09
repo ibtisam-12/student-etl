@@ -1,14 +1,10 @@
 from pymongo import MongoClient
 from config import MONGO_URI, MONGO_DB, MONGO_COLLECTION
 
+_client = MongoClient(MONGO_URI)
+
 def get_collection():
-    client = MongoClient(MONGO_URI)
-    return client[MONGO_DB][MONGO_COLLECTION]
-
-
-def clear_collection():
-    col = get_collection()
-    col.delete_many({})
+    return _client[MONGO_DB][MONGO_COLLECTION]
 
 
 def insert_denormalized_students(records: list[dict]) -> int:
@@ -66,7 +62,7 @@ def insert_denormalized_students(records: list[dict]) -> int:
 def safe_int(x) -> int:
     try:
         return int(str(x).strip())
-    except Exception:
+    except (ValueError, TypeError):
         return 0
 
 
@@ -116,6 +112,7 @@ def status():
     for d in col.find({}, {"enrollments": 1}):
         enrollments += len(d.get("enrollments", []))
     return {"students_docs": students, "total_enrollments_embedded": enrollments}
+
 def delete_all_mongo_data() -> int:
     """
     Deletes all documents from the Mongo collection.
